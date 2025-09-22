@@ -1,0 +1,82 @@
+diff --git a/app/src/main/java/eu/kanade/tachiyomi/ui/reader/ReaderMode.kt b/app/src/main/java/eu/kanade/tachiyomi/ui/reader/ReaderMode.kt
+index 1234567..89abcde 100644
+--- a/app/src/main/java/eu/kanade/tachiyomi/ui/reader/ReaderMode.kt
++++ b/app/src/main/java/eu/kanade/tachiyomi/ui/reader/ReaderMode.kt
+@@ enum class ReaderMode(val value: Int) {
+     WEBTOON(2),
++    PANEL(3); // Novo modo Painel
+diff --git a/app/src/main/java/eu/kanade/tachiyomi/ui/reader/panel/PanelDetector.kt b/app/src/main/java/eu/kanade/tachiyomi/ui/reader/panel/PanelDetector.kt
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/java/eu/kanade/tachiyomi/ui/reader/panel/PanelDetector.kt
+@@
++package eu.kanade.tachiyomi.ui.reader.panel
++
++import android.graphics.Bitmap
++
++object PanelDetector {
++    fun detectPanels(page: Bitmap): List<Bitmap> {
++        // TODO: implementar detecção real de painéis
++        // Por enquanto, retorna a página inteira como 1 painel
++        return listOf(page)
++    }
++}
+diff --git a/app/src/main/java/eu/kanade/tachiyomi/ui/reader/panel/PanelReaderAdapter.kt b/app/src/main/java/eu/kanade/tachiyomi/ui/reader/panel/PanelReaderAdapter.kt
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/java/eu/kanade/tachiyomi/ui/reader/panel/PanelReaderAdapter.kt
+@@
++package eu.kanade.tachiyomi.ui.reader.panel
++
++import android.view.ViewGroup
++import android.widget.ImageView
++import androidx.recyclerview.widget.RecyclerView
++import android.graphics.Bitmap
++
++class PanelReaderAdapter(private val panels: List<Bitmap>) :
++    RecyclerView.Adapter<PanelReaderAdapter.PanelViewHolder>() {
++
++    class PanelViewHolder(val imageView: ImageView) : RecyclerView.ViewHolder(imageView)
++
++    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PanelViewHolder {
++        val imageView = ImageView(parent.context)
++        imageView.layoutParams = ViewGroup.LayoutParams(
++            ViewGroup.LayoutParams.MATCH_PARENT,
++            ViewGroup.LayoutParams.WRAP_CONTENT
++        )
++        imageView.adjustViewBounds = true
++        return PanelViewHolder(imageView)
++    }
++
++    override fun onBindViewHolder(holder: PanelViewHolder, position: Int) {
++        holder.imageView.setImageBitmap(panels[position])
++    }
++
++    override fun getItemCount(): Int = panels.size
++}
+diff --git a/app/src/main/java/eu/kanade/tachiyomi/ui/reader/panel/PanelReaderActivity.kt b/app/src/main/java/eu/kanade/tachiyomi/ui/reader/panel/PanelReaderActivity.kt
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/java/eu/kanade/tachiyomi/ui/reader/panel/PanelReaderActivity.kt
+@@
++package eu.kanade.tachiyomi.ui.reader.panel
++
++import android.os.Bundle
++import androidx.appcompat.app.AppCompatActivity
++import androidx.recyclerview.widget.LinearLayoutManager
++import androidx.recyclerview.widget.RecyclerView
++
++class PanelReaderActivity : AppCompatActivity() {
++    override fun onCreate(savedInstanceState: Bundle?) {
++        super.onCreate(savedInstanceState)
++
++        // TODO: integrar com sistema real de páginas do Mihon
++        val dummyPanels = listOf<android.graphics.Bitmap>()
++
++        val recyclerView = RecyclerView(this)
++        recyclerView.layoutManager = LinearLayoutManager(this)
++        recyclerView.adapter = PanelReaderAdapter(dummyPanels)
++
++        setContentView(recyclerView)
++    }
++}
