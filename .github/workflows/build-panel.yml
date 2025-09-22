@@ -1,0 +1,38 @@
+name: Build Mihon Panel Mod
+
+on:
+  workflow_dispatch:   # você dispara manualmente pelo botão "Run workflow"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Instalar JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Configurar cache do Gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+
+      - name: Instalar dependências
+        run: ./gradlew dependencies || true
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Salvar APK como artefato
+        uses: actions/upload-artifact@v3
+        with:
+          name: mihon-panel-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
